@@ -5,73 +5,97 @@
 // convenience to get you started writing code faster.
 //
 
-$romanNumeralsDict = [
-    1 => 'I',
-    5 => 'V',
-    10 => 'X',
-    50 => 'L',
-    100 => 'C',
-    500 => 'D',
-    1000 => 'M',
-];
-
-function toRoman(int $arabicNumeral)
+function toRoman(int $arabicNumber)
 {
     global $romanNumeralsDict;
 
-    $arabicRanges = array_keys($romanNumeralsDict);
-
-    if ($arabicNumeral > 3000) {
-        throw new \InvalidArgumentException('Max number to convert is 3000');
+    if ($arabicNumber > 3999) {
+        throw new \InvalidArgumentException('Max number to convert is 3999');
     }
 
-    if ($arabicNumeral < 1) {
+    if ($arabicNumber < 1) {
         throw new \InvalidArgumentException('Minimum number to convert is 1');
     }
 
-    for ($i = 0; $i < strlen($arabicNumeral); $i++) {
-        $numToConvert = substr($arabicNumeral, $i);
+    $romanNumeral = '';
+
+    $placeValues = strlen($arabicNumber);
+    for ($placeValue = $placeValues; $placeValue >= 1; $placeValue--) {
+        $stringPos = ($placeValues - $placeValue);
+        $numberToConvert = (int) substr($arabicNumber, $stringPos, 1);
 
         // ignore 0
-        if ((int) $numToConvert == 0) {
+        if ($numberToConvert === 0) {
             continue;
         }
 
-        $numBase10 = convertToBase10($numToConvert);
-var_dump($numBase10);
-        foreach ($arabicRanges as $key => $val) {
-            $arabicRangeMin = $arabicRanges[$key];
-            $arabicRangeMax = null;
-            if (isset($arabicRanges[$key+1])) {
-                $arabicRangeMax = $arabicRanges[$key+1];
-            }
+        // convert 1 into 1000, 2 into 20 etc depending on $placeValue
+        $arabricNumeralToConvert = $numberToConvert * (10 ** ($placeValue - 1));
 
-            if (!isset($arabicRangeMax)) {
-                $romanNumeralChar1 = $romanNumeralsDict[$arabicRangeMin];
-                $romanNumeralChar2 = null;
-
-            } elseif ($numBase10 >= $arabicRangeMin && $numBase10 < $arabicRangeMax) {
-                $romanNumeralChar1 = $romanNumeralsDict[$arabicRangeMin];
-                $romanNumeralChar2 = $romanNumeralsDict[$arabicRangeMax];
-            }
-
-            $repetitions = $numBase10 / $arabicRangeMin;
-            if ($repetitions <= 3) {
-                $romanNumeral .= str_repeat($romanNumeralChar1, $repetitions);
-            } elseif ($repetitions == 4) {
-                $romanNumeral .= $romanNumeralChar1 . $romanNumeralChar2;
-            }
-        }
+        $romanNumeral .= calculateRomanNumeral($arabricNumeralToConvert);
     }
 
     return $romanNumeral;
 }
 
-function convertToBase10(int $number)
+function calculateRomanNumeral(int $arabicNumber)
 {
-    $firstDigit = substr($number, 0, 1);
+    $romanNumeralsDict = [
+        1 => 'I',
+        5 => 'V',
+        10 => 'X',
+        50 => 'L',
+        100 => 'C',
+        500 => 'D',
+        1000 => 'M',
+    ];
 
-    $base10 = str_pad($firstDigit, strlen($number), '0');
+    // lets get ranges of the arabic numerals
+    $arabicNumerals = array_keys($romanNumeralsDict);
 
-    return (int) $base10;
+    foreach ($arabicNumerals as $key => $val) {
+        // if the number we are trying to convert higher than the next arabic index
+        if (isset($arabicNumerals[($key + 1)]) && $arabicNumber >= $arabicNumerals[($key + 1)]) {
+            continue;
+        }
+
+        $currentNumeral = $arabicNumerals[$key];
+        $prevNumeral = $arabicNumerals[($key - 1)];
+
+        if (isset($arabicNumerals[$key + 1])) {
+            $nextNumeral = $arabicNumerals[($key + 1)];
+        } else {
+            $nextNumeral = null;
+        }
+
+        // For 5-9, 50-90, 500-900
+        if (substr($currentNumeral, 0, 1) === '5') {
+            $modulus = $arabicNumber % $currentNumeral;
+            $quotient = $modulus / $prevNumeral;
+
+            // for 9 return IX, 90 return XC, 900 return CM
+            if ($quotient === 4) {
+                return $romanNumeralsDict[$prevNumeral].$romanNumeralsDict[$nextNumeral];
+
+            // for 8 return VIII, 70 return LXX, 600 return LC etc
+            } else {
+                return $romanNumeralsDict[$currentNumeral].str_repeat($romanNumeralsDict[$prevNumeral], $quotient);
+            }
+
+        // For 1-4, 10-40, 100-400, 1000-3000
+        } else {
+            $quotient = $arabicNumber / $currentNumeral;
+
+            // for 4 return IV, 40 return XL, 400 return CD
+            if ($quotient === 4 && isset($nextNumeral)) {
+                return $romanNumeralsDict[$currentNumeral].$romanNumeralsDict[$nextNumeral];
+
+            // for 3 return III, 20 return XX, 100 return C, 2000 return MM
+            } else {
+                return str_repeat($romanNumeralsDict[$currentNumeral], $quotient);
+            }
+        }
+
+        break;
+    }
 }
