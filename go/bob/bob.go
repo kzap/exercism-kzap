@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-// Hey takes an string and returns a string response depending on
+// Hey takes an string and returns a string response depending on the string input given.
 // Bob answers 'Sure.' if you ask him a question.
 // He answers 'Whoa, chill out!' if you yell at him.
 // He answers 'Calm down, I know what I'm doing!' if you yell a question at him.
@@ -15,27 +15,27 @@ func Hey(remark string) string {
 
 	remark = strings.TrimSpace(remark)
 
-	if isEmpty(remark) {
+	if IsEmpty(remark) {
 		return "Fine. Be that way!"
 	}
 
-	if isQuestion(remark) && isYelling(remark) {
+	if IsQuestion(remark) && IsYelling(remark) {
 		return "Calm down, I know what I'm doing!"
 	}
 
-	if isQuestion(remark) {
+	if IsQuestion(remark) {
 		return "Sure."
 	}
 
-	if isYelling(remark) {
+	if IsYelling(remark) {
 		return "Whoa, chill out!"
 	}
 
 	return "Whatever."
 }
 
-// isQuestion checks if the string ends with a question mark
-func isQuestion(remark string) bool {
+// IsQuestion checks if the string ends with a question mark.
+func IsQuestion(remark string) bool {
 	if string(remark[len(remark)-1:]) == "?" {
 		return true
 	}
@@ -43,8 +43,8 @@ func isQuestion(remark string) bool {
 	return false
 }
 
-// isYelling checks if this string is in upper case
-func isYelling(remark string) bool {
+// IsYelling checks if this string is in upper case.
+func IsYelling(remark string) bool {
 	if remark == strings.ToUpper(remark) && remark != strings.ToLower(remark) {
 		return true
 	}
@@ -52,8 +52,8 @@ func isYelling(remark string) bool {
 	return false
 }
 
-// isEmpty checks if the string has any characters
-func isEmpty(remark string) bool {
+// IsEmpty checks if the string has any characters.
+func IsEmpty(remark string) bool {
 	if len(remark) == 0 {
 		return true
 	}
