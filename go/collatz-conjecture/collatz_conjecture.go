@@ -17,14 +17,10 @@ func CollatzConjecture(input int) (int, error) {
 	steps := 0
 
 	if input < 1 {
-		return 0, errors.New("input must be greater than or equal to 1")
+		return 0, errors.New("input must be > 0")
 	}
 
-	for {
-		if input <= 1 {
-			break
-		}
-
+	for input > 1 {
 		if input%2 == 0 {
 			input = input / 2
 		} else {
