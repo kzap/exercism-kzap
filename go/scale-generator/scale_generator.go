@@ -22,10 +22,6 @@ var useFlats = []string{"F", "Bb", "Eb", "Ab", "Db", "Gb", "d", "g", "c", "f", "
 // A, A#, B, C, C#, D, D#, E, F, F#, G, G#
 func Scale(tonic string, interval string) []string {
 
-	if interval == "" {
-		interval = strings.Repeat("m", 12)
-	}
-
 	var chromaticScale []string
 
 	if StringInSlice(tonic, useFlats) {
@@ -34,27 +30,30 @@ func Scale(tonic string, interval string) []string {
 		chromaticScale = chromaticScaleSharp
 	}
 
+	if interval == "" {
+		interval = strings.Repeat("m", len(chromaticScale))
+	}
+
 	// find start of scale
-	tonicUpper := strings.ToUpper(tonic)
 	for i, s := range chromaticScale {
-		if strings.ToUpper(s) == tonicUpper {
+		if strings.EqualFold(s, tonic) {
 			// rearrange scale
 			chromaticScale = append(chromaticScale[i:], chromaticScale[:i]...)
 			break
 		}
 	}
 
-	var scale []string
-	var key int = 0
-	for _, r := range interval {
-		scale = append(scale, chromaticScale[key])
+	scale := make([]string, len(interval))
+	key := 0
+	for i, r := range interval {
+		scale[i] = chromaticScale[key]
 
-		switch string(r) {
-		case "m":
+		switch r {
+		case 'm':
 			key += 1
-		case "M":
+		case 'M':
 			key += 2
-		case "A":
+		case 'A':
 			key += 3
 		}
 	}
