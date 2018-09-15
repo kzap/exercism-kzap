@@ -1,16 +1,23 @@
 // Package listops solves the List Ops side exercise on Exercism's Go track.
 package listops
 
-import (
-//"log"
-)
-
+// A list of integers.
 type IntList []int
+
+// A binary function for folding integers.
 type binFunc func(x, y int) int
+
+// A predicate function for filtering a list of integers.
 type predFunc func(n int) bool
+
+// A unary function for mapping a list of integers.
 type unaryFunc func(x int) int
 
-// Foldl
+// Foldl takes in a starting integer and binary function of:
+//
+// func(x, y int) int
+//
+// It runs the given function over a slice of integers from a left to right direction.
 func (list IntList) Foldl(fn binFunc, start int) int {
 	if list.Length() == 0 {
 		return start
@@ -26,7 +33,11 @@ func (list IntList) Foldl(fn binFunc, start int) int {
 	//return fn(IntList(list[1:]).Foldr(fn, start), list[0])
 }
 
-// Foldr
+// Foldr takes in a starting integer and binary function of:
+//
+// func(x, y int) int
+//
+// It runs the given function over a slice of integers from a right to left direction.
 func (list IntList) Foldr(fn binFunc, start int) int {
 	if list.Length() == 0 {
 		return start
@@ -35,13 +46,13 @@ func (list IntList) Foldr(fn binFunc, start int) int {
 	return fn(list[0], IntList(list[1:]).Foldr(fn, start))
 }
 
-// Filter
+// Filter takes in a predicate function of:
+//
+// func(n int) bool
+//
+// It runs the given function over a slice of integers and returns all those that return true.
 func (list IntList) Filter(fn predFunc) IntList {
-	newList := IntList{}
-
-	if list.Length() == 0 {
-		return newList
-	}
+	newList := make(IntList, 0, list.Length())
 
 	for _, v := range list {
 		if fn(v) == true {
@@ -52,7 +63,7 @@ func (list IntList) Filter(fn predFunc) IntList {
 	return newList
 }
 
-// Length
+// Length takes in a slice of integers and returns number of values in the slice.
 func (list IntList) Length() (length int) {
 	for range list {
 		length++
@@ -61,18 +72,22 @@ func (list IntList) Length() (length int) {
 	return
 }
 
-// Map
+// Map takes in a unary function of:
+//
+// unaryFunc func(x int) int
+//
+// It runs the given function and applies it to each value in the slice.
 func (list IntList) Map(fn unaryFunc) IntList {
-	newList := IntList{}
+	newList := make(IntList, list.Length())
 
-	for _, v := range list {
-		newList = newList.Append(IntList{fn(v)})
+	for i, v := range list {
+		newList[i] = fn(v)
 	}
 
 	return newList
 }
 
-// Reverse
+// Reverse returns the slice in reverse order.
 func (list IntList) Reverse() IntList {
 	listLength := list.Length()
 
@@ -85,7 +100,7 @@ func (list IntList) Reverse() IntList {
 	return newList
 }
 
-// Append
+// Append takes in a slice of integers and appends it to the current slice of integers.
 func (list IntList) Append(appendList IntList) IntList {
 	listLength := list.Length()
 	appendLength := appendList.Length()
@@ -103,9 +118,10 @@ func (list IntList) Append(appendList IntList) IntList {
 	return newList
 }
 
-// Concat
+// Concat takes in multiple slices integers and appends it to the current slice of integers.
 func (list IntList) Concat(concatList []IntList) IntList {
-	newList := list
+	newList := IntList{}
+	newList = newList.Append(list)
 
 	for _, v := range concatList {
 		newList = newList.Append(v)
