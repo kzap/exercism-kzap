@@ -1,7 +1,7 @@
 <?php
 
-define('CHR_START', 97);
-define('CHR_END', 122);
+define('CHR_START', 'A');
+define('CHR_END', 'AA');
 
 function isPangram(string $sentence): bool
 {
@@ -10,12 +10,11 @@ function isPangram(string $sentence): bool
 
 function isPangramIsSet(string $sentence): bool
 {
-    $sentence = strtolower($sentence);
+    $sentence = strtoupper($sentence);
     $charArray = str_split($sentence);
     $charArray = array_flip($charArray);
 
-    for ($i = CHR_START; $i <= CHR_END; $i++) {
-        $char = chr($i);
+    for ($char = CHR_START; $char != CHR_END; $char++) {
         if (!isset($charArray[$char])) {
             return false;
         }
@@ -26,10 +25,9 @@ function isPangramIsSet(string $sentence): bool
 
 function isPangramStrPos(string $sentence): bool
 {
-    $sentence = strtolower($sentence);
+    $sentence = strtoupper($sentence);
 
-    for ($i = CHR_START; $i <= CHR_END; $i++) {
-        $char = chr($i);
+    for ($char = CHR_START; $char != CHR_END; $char++) {
         if (strpos($sentence, $char) === false) {
             return false;
         }
