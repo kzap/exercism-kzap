@@ -1,8 +1,9 @@
 package accumulate
 
-// A binary function for folding integers.
+// A function which takes a list of strings and outputs a list of strings.
 type converterFunc func(string) string
 
+// Accumulate takes in a list of strings and a function and maps over them.
 func Accumulate(list []string, fn converterFunc) []string {
 	newList := make([]string, Length(list))
 
@@ -13,7 +14,7 @@ func Accumulate(list []string, fn converterFunc) []string {
 	return newList
 }
 
-// Length takes in a slice of integers and returns number of values in the slice.
+// Length takes in a slice of strings and returns number of values in the slice.
 func Length(list []string) (length int) {
 	for range list {
 		length++
