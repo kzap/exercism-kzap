@@ -61,10 +61,7 @@ func Search(pattern string, flags, filenames []string) []string {
 				log.Fatalf("regexp error using [%v]: %v\n", pattern, err)
 				os.Exit(1)
 			}
-			if matched && !inverseMatch {
-				lineFound = true
-			}
-			if !matched && inverseMatch {
+			if matched != inverseMatch {
 				lineFound = true
 			}
 
@@ -124,11 +121,8 @@ func ParseFlags(flags []string) Flags {
 
 // IsFlagActive takes in a flag and a map of Flags and returns a bool
 func IsFlagActive(flag string, flagsActivated Flags) bool {
-	if _, ok := flagsActivated[flag]; ok {
-		return true
-	}
-
-	return false
+	_, ok := flagsActivated[flag]
+	return ok
 }
 
 // StringInSlice checks if a string exists in a list of strings.
