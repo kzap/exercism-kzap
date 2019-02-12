@@ -43,7 +43,7 @@ func ScoreSwitch(word string) int {
 	for _, r := range word {
 		switch unicode.ToUpper(r) {
 		case 'A', 'E', 'I', 'O', 'U', 'L', 'N', 'R', 'S', 'T':
-			score += 1
+			score++
 		case 'D', 'G':
 			score += 2
 		case 'B', 'C', 'M', 'P':
