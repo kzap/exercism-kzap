@@ -1,3 +1,4 @@
+// Package protein solves the Protein Translation side exercise on Exercism's Go track.
 package protein
 
 import (
